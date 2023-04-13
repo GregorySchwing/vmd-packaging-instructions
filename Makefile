@@ -1,6 +1,6 @@
 DESTDIR=$(shell pwd)
 ARCH=$(shell getconf LONG_BIT)
-VMDVER="1.9.4a55"
+VMDVER="1.9.4a57"
 ifeq ($(ARCH),64)
 	PLUGINTEXT=LINUXAMD64
 	OPTIX=LIBOPTIX 
@@ -14,7 +14,7 @@ TCL_INCLUDE_DIR=/usr/include/tcl8.6/
 TCL_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu
 TK_INCLUDE_DIR=/usr/include/tcl8.6/
 TK_LIBRARY_DIR=/usr/lib/x86_64-linux-gnu
-PYTHON_INCLUDE_DIR=/usr/include/python3.8
+PYTHON_INCLUDE_DIR=/usr/include/python3.10
 export
 all: compileplugins compilevmd
 
