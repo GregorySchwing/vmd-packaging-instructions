@@ -16,7 +16,7 @@ For completeness, we also provide instructions for [building packages](#bonus-li
 
 This is pretty straightforward, since we'll need to grab a copy of the VMD source code, as well as packages that unlock VMD features.
 Getting the VMD source is easy, since you just go to the  [VMD download page](https://www.ks.uiuc.edu/Development/Download/download.cgi?PackageName=VMD) and grab a copy of the source.
-This will be a compressed archive, so you will need to uncompress it with `tar -zxf vmdsourcecode.tgz`, with the filenames actually looking something like: `vmd-1.9.4a55.src.tar.gz`.
+This will be a compressed archive, so you will need to uncompress it with `tar -zxf vmdsourcecode.tgz`, with the filenames actually looking something like: `vmd-1.9.4a57.src.tar.gz`.
 This specific alpha version is the one that is assumed throughout the guide, and may require revision to be used for other versions.
 
 Now, there are other packages that we will need to grab that are not installed by default on Ubuntu installations.
@@ -36,23 +36,30 @@ The last two lines might look a little funny, but there is an unrelated package 
 There are also Debian packages that need to be installed as basic dependencies.
 ```bash
 sudo apt install devscripts debhelper #Package building and general compilation
-sudo apt install nvidia-cuda-toolkit #Building CUDA applications
-sudo apt install libtachyon-mt-0-dev python3.8-dev tcl8.6-dev tk8.6-dev libnetcdf-dev libpng-dev python3-numpy python3-tk mesa-common-dev libglu1-mesa-dev libxinerama-dev libfltk1.3-dev coreutils sed #VMD required headers and libraries.
+sudo apt install libtachyon-mt-0-dev python3.10-dev tcl8.6-dev tk8.6-dev libnetcdf-dev libpng-dev python3-numpy python3-tk mesa-common-dev libglu1-mesa-dev libxinerama-dev libfltk1.3-dev coreutils sed #VMD required headers and libraries.
 ```
 
+To build VMD with CUDA, you will need a CUDA toolkit.
+You have two choices, using either the stock CUDA available from the Ubuntu repositories, or a more up to date version that comes from NVIDIA repositories.
 One note that will be important here, is that you *may* already have a CUDA toolkit installed.
 CUDA toolkits installed by NVIDIA will install CUDA to `/usr/local/cuda`, whereas the Ubuntu version will install CUDA to `/usr`.
-The version installed above is currently CUDA 10, which does not have support for the latest and greatest graphics cards.
+The version installed from the Ubuntu repositories is currently CUDA 10, which does not have support for the latest and greatest graphics cards.
 Thus, the rest of this tutorial will assume that you got CUDA directly from NVIDIA.
 If you use the version directly from Ubuntu, you will need to modify the `configure` [script](#`vmd/configure`) accordingly.
-The code below will install the CUDA toolkit from NVIDIA for Ubuntu 20.04.
+The code below will install the CUDA toolkit from NVIDIA for Ubuntu 22.04.
+
 
 ```bash
-sudo wget -O /etc/apt/preferences.d/cuda-repository-pin-600 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
-sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
-sudo add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
+sudo wget -O /etc/apt/preferences.d/cuda-repository-pin-600 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub
+sudo add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /"
 sudo apt update
 sudo apt install cuda
+```
+
+If you prefer the older CUDA packages in the Ubuntu repositories, you'd do the following.
+```bash
+sudo apt install nvidia-cuda-toolkit
 ```
 
 ## Debian Package Structure
@@ -62,9 +69,9 @@ The structure is defined by Debian, and as a result, the [Debian package buildin
 Debian expects a rigid directory structure for packaging:
 ```
 vmdpackaging
-|   vmd_1.9.4a55.orig.tar.gz
+|   vmd_1.9.4a57.orig.tar.gz
 |
-└───vmd-1.9.4a55
+└───vmd-1.9.4a57
     |	Makefile
     |	vmd.png
     |
@@ -88,11 +95,11 @@ Feel free to copy from this github repository to start with.
 ```bash
 mkdir vmdpackaging
 cd vmdpackaging
-mv ~/vmd-1.9.4a55.src.tar.gz vmd_1.9.4a55.orig.tar.gz
-mkdir vmd-1.9.4a55
-cd vmd-1.9.4a55
-tar -zxf ../vmd_1.9.4a55.orig.tar.gz
-mv vmd-1.9.4a55 vmd
+mv ~/vmd-1.9.4a57.src.tar.gz vmd_1.9.4a57.orig.tar.gz
+mkdir vmd-1.9.4a57
+cd vmd-1.9.4a57
+tar -zxf ../vmd_1.9.4a57.orig.tar.gz
+mv vmd-1.9.4a57 vmd
 #Get the initial, not totally broken debian files.
 git init
 git remote add origin https://github.com/jvermaas/vmd-packaging-instructions.git
@@ -116,7 +123,7 @@ Check the general makefile first, which defines the optional compilation flags t
 The basic line that is easy to support with just Ubuntu packages from the general repository is: `OPENGL TK FLTK IMD ACTC XINERAMA LIBTACHYON ZLIB LIBPNG NETCDF TCL PYTHON PTHREADS NUMPY COLVARS CUDA`
 Two optional raytrace renderers are easy enough to add, but require that packages are installed to support those renderers.
 See the section [below](#bonus-libraries-and-fpm) to install `LIBOPTIX` and `LIBOSPRAY2`.
-If you choose to forego these rendering engines, you'll need to take them out of the `configure` lines within the `Makefile`.
+If you choose to add these rendering engines, you'll need to uncomment two commented lines in the `Makefile`.
 
 ### `plugins/Make-arch`
 
@@ -361,9 +368,11 @@ debuild -b
 This rolls through compiling the plugins and VMD itself, generating three packages in the `vmdpackaging` directory.
 Note that this generates *unsigned* packages, since y'all don't have my gpg key.
 If you want/need signed packages, you'll need to edit `debian/changelog` to have the most recent edit signed by the name and email address matching your [gpg key](https://help.ubuntu.com/community/GnuPrivacyGuardHowto).
+Without a gpg key, you may get errors about generating unsigned packages.
+This is to be expected, and so long as the `.deb` files are produced, these errors can be ignored.
 To install these packages directly, you would do something like:
 ```bash
-cd ..
+cd .. #Puts you in the right directory.
 sudo dpkg -i vmd-cuda_1.9.4a55-3_amd64.deb vmd-plugins_1.9.4a55-3_amd64.deb
 ```
 
@@ -389,6 +398,10 @@ sudo reprepro includedeb focal ~/vmdpackaging/vmd_1.9.4a55-3_amd64.deb
 # Bonus Libraries and fpm
 
 There are optional libraries VMD uses to unlock specific features, principally those distributed by NVIDIA ([OptiX](https://developer.nvidia.com/designworks/optix/download)) and Intel ([ospray](https://www.ospray.org/downloads.html)) for ray-trace rendering.
+The APIs for these libraries change from time to time.
+While any OSPRay version in the 2.X branch should work (we've tested 2.8.0 and 2.4.0), OptiX is much pickier.
+VMD currently assumes the API from OptiX 6.5.0, which is under the "All older versions" button on the OptiX download page.
+
 Both Intel and NVIDIA have big scary legal teams that mean that it is important to pay closer attention to licenses.
 OSPRAY is under a permissive [Apache license](http://www.apache.org/licenses/LICENSE-2.0).
 OptiX has a different license, so we'll need to download that explicitly from NVIDIA.
@@ -413,7 +426,7 @@ sudo dpkg -i libospray*
 
 The basic idea is to untar the precompiled library, move the `lib` and `include` subdirectories into somewhere accessible, and use `fpm` to build debian packages from the directory structures.
 We can do something similar with OptiX.
-To get the OptiX library (specifically the 6.5 version VMD's API expects), you would download `NVIDIA-OptiX-SDK-6.5.0-linux64.sh` from [NVIDIA's developer site](https://developer.nvidia.com/designworks/optix/download), which requires a free account.
+To get the OptiX library (specifically the 6.5 version VMD's API expects, which is under "all older versions"), you would download `NVIDIA-OptiX-SDK-6.5.0-linux64.sh` from [NVIDIA's developer site](https://developer.nvidia.com/designworks/optix/download), which requires a free account.
 Once downloaded, you would run the shell script, and create packages out of it.
 
 ```bash
