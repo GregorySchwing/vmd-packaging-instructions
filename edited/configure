@@ -376,7 +376,6 @@ foreach $term (@ARGV) {
 		if ($term eq "RPM")             { $config_rpm             = 1; next; }
 		if ($term eq "TKCON")           { $config_tkcon           = 1; next; }
 		if ($term eq "NOSTATICPLUGINS") { $config_staticplugin    = 0; next; }
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
 
 		# once optional, these are now required.  They exist for backwards
 		# compatibility; some may be expanded again in the future
@@ -384,22 +383,6 @@ foreach $term (@ARGV) {
 		if ($term eq "MSMS")            { next; }
 		if ($term eq "NANOSHAPER")      { next; }
 
-<<<<<<< HEAD
-    # compiler and make options 
-    if ($term eq "SILENT")          { $config_silent          = 1; next; }
-    if ($term eq "NOSILENT")        { $config_silent          = 0; next; }
-    if ($term eq "STATIC")          { $config_static          = 1; next; }
-    if ($term eq "LP64")            { $config_lp64            = 1; next; }
-    if ($term eq "CLANG")           { $config_clang           = 1; next; }
-    if ($term eq "GCC")             { $config_gcc             = 1; next; }
-    if ($term eq "ICC")             { $config_icc             = 1; next; }
-    if ($term eq "PGCC")            { $config_pgcc            = 1; next; }
-    if ($term eq "XLC")             { $config_xlc             = 1; next; }
-    if ($term eq "MSVC")            { $config_msvc            = 1; next; }
-    if ($term eq "SANITIZE")        { $config_sanitize        = 1; next; }
-    if ($term eq "SHARED")          { $config_shared          = 1; next; }
-    if ($term eq "CCACHE")          { $config_ccache          = 1; next; }
-=======
 		# compiler and make options 
 		if ($term eq "SILENT")          { $config_silent          = 1; next; }
 		if ($term eq "NOSILENT")        { $config_silent          = 0; next; }
@@ -414,7 +397,7 @@ foreach $term (@ARGV) {
 		if ($term eq "SANITIZE")        { $config_sanitize        = 1; next; }
 		if ($term eq "SHARED")          { $config_shared          = 1; next; }
 		if ($term eq "CCACHE")          { $config_ccache          = 1; next; }
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
+
 
 
 		# error conditions
@@ -586,18 +569,6 @@ $arch_cc          = "cc";
 $arch_ccpp        = "CC";
 $arch_nvcc        = "/usr/local/cuda/bin/nvcc";
 $arch_nvccflags   = "-lineinfo --ptxas-options=-v " . 
-<<<<<<< HEAD
-      "-gencode arch=compute_52,code=sm_52 " .
-                    "-gencode arch=compute_60,code=compute_60 " .
-                    "-gencode arch=compute_60,code=sm_60 " .
-                    "-gencode arch=compute_70,code=compute_70 " .
-                    "-gencode arch=compute_70,code=sm_70 " .
-        "-gencode arch=compute_75,code=sm_75 " .
-                    "-gencode arch=compute_80,code=sm_80 " .
-                    "-gencode arch=compute_86,code=sm_86 " .
-                    "-gencode arch=compute_89,code=sm_89 " .
-                    "--ftz=true ";
-=======
 										"-gencode arch=compute_50,code=compute_50 " .
 										"-gencode arch=compute_50,code=sm_50 " .
 										"-gencode arch=compute_52,code=sm_52 " .
@@ -611,7 +582,6 @@ $arch_nvccflags   = "-lineinfo --ptxas-options=-v " .
 										"-gencode arch=compute_86,code=sm_86 " .
 										"-gencode arch=compute_89,code=sm_89 " .
 										"--ftz=true ";
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
 #                    "-gencode arch=compute_75,code=sm_75 " .
 $arch_gcc         = "gcc";
 $arch_gccpp       = "g++";
@@ -1082,7 +1052,6 @@ if ($config_arch eq "LINUXARM64" || $config_arch eq "MACOSXARM64") {
 																);
 	}
 
-<<<<<<< HEAD
   # ARM SVE 
   if ($config_arch eq "LINUXARM64") {
     @cpudispatch_ccpp_sve    = (
@@ -1091,8 +1060,7 @@ if ($config_arch eq "LINUXARM64" || $config_arch eq "MACOSXARM64") {
                                 );
   }
 
-=======
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
+
 } elsif ($config_arch eq "LINUXAMD64" || $config_arch eq "WIN64" || $config_arch eq "MACOSXX86_64") {
 	# Intel x86, AVX, AVX2, AVX-512
 	$cpudispatch_defines     = "-DVMDCPUDISPATCH -DVMDUSEAVX -DVMDUSEAVX2 -DVMDUSEAVX512";
@@ -1268,17 +1236,10 @@ if ($config_arch eq "MACOSXARM64" || $config_arch eq "MACOSXX86" || $config_arch
 	$libanari_library     = "-L$libanari_dir/lib64 ";
 	$libanari_libs        = "-lanari ";
 } else {
-<<<<<<< HEAD
-  $libanari_dir         = "/usr/local/anari-1.0";
-  $libanari_include     = "-I$libanari_dir/include -I$libanari_dir/anari/include ";
-  $libanari_library     = "-L$libanari_dir/lib64 ";
-  $libanari_libs        = "-lanari ";
-=======
 	$libanari_dir         = "/usr/local/anari-1.0";
 	$libanari_include     = "-I$libanari_dir/include -I$libanari_dir/anari/include ";
 	$libanari_library     = "-L$libanari_dir/lib64 ";
 	$libanari_libs        = "-lanari ";
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
 }
 
 # ANARI, OptiX, and OSPRay renderers use the Tachyon glwin code,
@@ -1440,7 +1401,6 @@ if ($config_arch eq "MACOSXARM64" || $config_arch eq "MACOSXX86" || $config_arch
 }
 
 if ($config_arch eq "MACOSXARM64" || $config_arch eq "MACOSXX86" || $config_arch eq "MACOSXX86_64") {
-<<<<<<< HEAD
   $libospray2_dir         = "/Users/johns/vmd/lib/ospray-2.8.0.x86_64.macosx";
   $libospray2_include     = "-I$libospray2_dir/include -I$libospray2_dir/ospray/include ";
   $libospray2_library     = "-L$libospray2_dir/lib ";
@@ -1450,17 +1410,6 @@ if ($config_arch eq "MACOSXARM64" || $config_arch eq "MACOSXX86" || $config_arch
   $libospray2_include     = "-I$libospray2_dir/include -I$libospray2_dir/ospray/include ";
   $libospray2_library     = "-L$libospray2_dir/lib ";
   $libospray2_libs        = "-lospray -lospcommon -lembree3 -ltbb -ltbbmalloc ";
-=======
-	$libospray2_dir         = "/Users/johns/vmd/lib/ospray-2.8.0.x86_64.macosx";
-	$libospray2_include     = "-I$libospray2_dir/include -I$libospray2_dir/ospray/include ";
-	$libospray2_library     = "-L$libospray2_dir/lib ";
-	$libospray2_libs        = "-lospray -lospcommon -lembree3.3 -ltbb -ltbbmalloc ";
-} else {
-	$libospray2_dir         = "/usr/local/ospray-2.8.0.x86_64.linux";
-	$libospray2_include     = "-I$libospray2_dir/include -I$libospray2_dir/ospray/include ";
-	$libospray2_library     = "-L$libospray2_dir/lib ";
-	$libospray2_libs        = "-lospray -lospcommon -lembree3 -ltbb -ltbbmalloc ";
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
 }
 
 # Both OptiX and OSPRay renderers use the Tachyon glwin code,
@@ -1803,15 +1752,9 @@ if ($ENV{_CONDA_ROOT}) {
 
 #  $stock_numpy_include_dir=$ENV{"NUMPY_INCLUDE_DIR"} || "/usr/local/include";
 #  $stock_numpy_library_dir=$ENV{"NUMPY_LIBRARY_DIR"} || "/usr/local/lib";
-<<<<<<< HEAD
   $stock_numpy_include_dir=$ENV{"NUMPY_INCLUDE_DIR"} || "$vmd_library_dir/numpy/lib_$config_arch/include";
   $stock_numpy_library_dir=$ENV{"NUMPY_LIBRARY_DIR"} || "$vmd_library_dir/python/lib_$config_arch/lib/python2.5/site-packages/numpy/core/include";
   $python_libs        = "-lpython3.10 -lpthread";
-=======
-	$stock_numpy_include_dir=$ENV{"NUMPY_INCLUDE_DIR"} || "$vmd_library_dir/numpy/lib_$config_arch/include";
-	$stock_numpy_library_dir=$ENV{"NUMPY_LIBRARY_DIR"} || "$vmd_library_dir/python/lib_$config_arch/lib/python2.5/site-packages/numpy/core/include";
-	$python_libs        = "-lpython3.10 -lpthread";
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
 }
 
 $python_defines     = "-DVMDPYTHON";
@@ -1877,7 +1820,6 @@ $vmd_library       = "$tcl_library";
 $vmd_libs          = "$tcl_libs";
 
 @vmd_cc         = ('c_compiler.c',
-<<<<<<< HEAD
                    'hash.c',
                    'inthash.c',
                    'intstack.c',
@@ -1893,23 +1835,7 @@ $vmd_libs          = "$tcl_libs";
                    'fitrms.c',
                    @tcl_cc,
                    @tk_cc);
-=======
-									 'hash.c',
-									 'inthash.c',
-									 'intstack.c',
-									 'ptrstack.c',
-									 'msmpot.c',
-									 'msmpot_compute.c',
-									 'msmpot_cubic.c',
-									 'msmpot_setup.c',
-									 'vmdsock.c',
-									 'vmddlopen.c',
-									 'vmdfsinfo.c',
-									 'pcre.c',
-									 'fitrms.c',
-									 @tcl_cc,
-									 @tk_cc);
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
+
 
 @vmd_ccpp	= (
 			 'androidvmdstart.C', 
@@ -2677,7 +2603,6 @@ if ($config_arch eq "LINUXAMD64") {
 			print "LP64 ABI is already the default on this platform.\n";
 		}
 
-<<<<<<< HEAD
     if ($config_icc) {
       # for compiling with Intel C/C++:
       $arch_cc          = "icc";
@@ -2694,19 +2619,7 @@ if ($config_arch eq "LINUXAMD64") {
       $arch_shlibname   = "so";
       $arch_shcppopts   = "-fPIC";
       $arch_shldopts    = "";
-=======
-		if ($config_icc) {
-			# for compiling with Intel C/C++:
-			$arch_cc          = "icc";
-			$arch_ccpp        = "icpc";
-			if ($config_avx512) {
-				$arch_opt_flag    = "-Wall -Wno-unknown-pragmas -m64 -xMIC-AVX512 -O3";
-				$arch_copts       = "-Wall -Wno-unknown-pragmas -m64 -xMIC-AVX512 -O3";
-			} else {
-				$arch_opt_flag    = "-Wall -Wno-unknown-pragmas -m64 -msse2 -O3";
-				$arch_copts       = "-Wall -Wno-unknown-pragmas -m64 -msse2 -O3";
-			}
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
+
 
 			$arch_depend_flag = "-MM";
 			$arch_shlibname   = "so";
@@ -2754,7 +2667,6 @@ if ($config_arch eq "LINUXAMD64") {
 			$arch_depend_flag   = "-MM";
 			$arch_copts       = "-m64 -Wall -Wno-unknown-pragmas -O6 -ffast-math";
 
-<<<<<<< HEAD
     if ($config_cxx11) {
       $arch_opt_flag .= " -std=c++11"
     }
@@ -2763,15 +2675,6 @@ if ($config_arch eq "LINUXAMD64") {
       $arch_nvccflags   .= " --machine 64 -O3 $cuda_include";
       $cuda_library     = "-L/usr/local/cuda/lib64";
     }
-=======
-			# so far only STATIC version tested
-			if ($config_static) {
-				$arch_lopts	= "-static"; 
-			} else {
-				$arch_lopts	= "-rdynamic";
-			}
-		}
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
 
 		if ($config_cxx11) {
 			$arch_opt_flag .= " -std=c++11"
@@ -3051,21 +2954,14 @@ if ($config_arch eq "MACOSXARM64") {
 			# MacOS 10.3 stuff
 			$vmd_library .= " -Wl,-executable_path . -lmx";
  
-<<<<<<< HEAD
+
       $fltk_libs        = "-lfltk";
       $opengl_include   = $opengl_include;
       $opengl_dep_libs  = "-framework OpenGL -framework AGL -framework Cocoa";
       $arch_compilerc   = "/usr/bin/Rez";
       $arch_rcflags     = "-t APPL -o ../MACOSXARM64/vmd_MACOSXARM64 vmdmac.r";
     }
-=======
-			$fltk_libs        = "-lfltk";
-			$opengl_include   = $opengl_include;
-			$opengl_dep_libs  = "-framework OpenGL -framework AGL -framework Cocoa";
-			$arch_compilerc   = "/usr/bin/Rez";
-			$arch_rcflags     = "-t APPL -o ../MACOSXARM64/vmd_MACOSXARM64 vmdmac.r";
-		}
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
+
 
 		$mesa_include     = $mesa_include . " -I/usr/X11R6/include";
 		$mesa_libs        = "-lMesaGL -L/usr/X11R6/lib -lXext -lX11";
@@ -3587,13 +3483,9 @@ if ($config_ccache) {
 
 
 if ($config_sanitize && ($config_gcc || $config_clang)) {
-<<<<<<< HEAD
   $arch_opt_flag    .= " -fsanitize=address ";
   $arch_copts       .= " -fsanitize=address ";
-=======
-	$arch_opt_flag    .= " -fsanitize=address ";
-	$arch_copts       .= " -fsanitize=address ";
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
+
 }
 
 
@@ -4007,7 +3899,6 @@ $config_progname: y.tab.h \$(VMD_OBJS) \$(VMD_PTX)
 	\$(COMPILERC) \$(RCFLAGS)
 
 install:
-<<<<<<< HEAD
   if [ ! -d "$install_library_dir" ]; then \\
     \$(MAKEDIR) "$install_library_dir" ; \\
   fi ; \\
@@ -4056,56 +3947,7 @@ install:
   \$(DELETE) run_vmd_tmp
   \$(ECHO) Make sure "$install_bin_dir"/$install_name is in your path.
   \$(ECHO) "VMD installation complete.  Enjoy!"
-=======
-	if [ ! -d "$install_library_dir" ]; then \\
-		\$(MAKEDIR) "$install_library_dir" ; \\
-	fi ; \\
-	if [ ! -d "$install_bin_dir" ]; then \\
-		\$(MAKEDIR) "$install_bin_dir" ; \\
-	fi ; \\
-	if [ ! -d "$install_library_dir"/doc ]; then \\
-		\$(MAKEDIR) "$install_library_dir"/doc; \\
-	fi
-	-\$(COPY) ../Announcement  "$install_library_dir"
-	-\$(COPY) ../README        "$install_library_dir"
-	-\$(COPY) ../LICENSE       "$install_library_dir"
-	-\$(COPY) $vmd_doc_dir/ug.pdf        "$install_library_dir"/doc
-	if [ -f $install_library_dir/$config_progname ]; then \\
-					 \$(MOVE) "$install_library_dir/$config_progname" "$install_library_dir/OLD_$config_progname" ; \$(DELETE) "$install_library_dir/OLD_$config_progname" ; fi
-	-\$(COPY) ../$config_arch/$config_progname "$install_library_dir"
-	if [ -d "../lib/redistrib/lib_$config_arch" ]; then \\
-		\$(CD) ../lib/redistrib/lib_$config_arch; \$(TAR) -cf - ./* | \\
-		(cd "$install_library_dir" ; \$(TAR) -xf -) \\
-	fi ;
-	-\$(COPY) @vmd_other_exe "$install_library_dir"
-	-\$(CD) ..; \$(TAR) -cf - scripts | \\
-	(cd "$install_library_dir" ; \$(TAR) -xf -)
-	-\$(CD) $vmd_library_dir; \$(TAR) -cf - scripts | \\
-	(cd "$install_library_dir" ; \$(TAR) -xf -)
-	-\$(CD) ..; \$(TAR) -cf - python | \\
-	(cd "$install_library_dir"/scripts ; \$(TAR) -xf -)
-	#Plugins get installed by vmd-plugins. Don't worry about it. It's all taken care of.
-	#-\$(CD) ..; \$(TAR) -cf - plugins | \\
-	#(cd "$install_library_dir" ; \$(TAR) -xf -)
-	-\$(CD) ..; \$(TAR) -cf - shaders | \\
-	(cd "$install_library_dir" ; \$(TAR) -xf -)
-	if [ -f ../$config_arch/OptiXShaders.ptx ]; then \\
-		\$(COPY) ../$config_arch/OptiXShaders.ptx "$install_library_dir/shaders"; \\
-	fi; 
-	-\$(COPY) ../data/.vmdrc ../data/.vmdsensors ../data/vmd_completion.dat "$install_library_dir"
-	\$(CD) $vmd_bin_dir ; \\
-	if [ -f run_vmd_tmp ]; then \$(DELETE) run_vmd_tmp; fi ; \\
-		\$(ECHO) "Info: /bin/csh shell not found, installing Bourne shell startup script instead" ; \\
-		\$(ECHO) '#!/bin/sh' >> run_vmd_tmp ; \\
-		\$(ECHO) 'defaultvmddir=/usr/lib/vmd' >> run_vmd_tmp ; \\
-		\$(ECHO) 'vmdbasename=vmd' >> run_vmd_tmp ; \\
-		cat $vmd_bin_sh >> run_vmd_tmp ; \\
-	chmod +x run_vmd_tmp ; \\
-	\$(COPY) run_vmd_tmp "$install_bin_dir"/$install_name ; \\
-	\$(DELETE) run_vmd_tmp
-	\$(ECHO) Make sure "$install_bin_dir"/$install_name is in your path.
-	\$(ECHO) "VMD installation complete.  Enjoy!"
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
+
 
 ##### remove most of the cruft
 clean:
@@ -4123,39 +3965,7 @@ veryclean: clean
 
 # The '/usr/include' stuff is to reduce checking /usr/include dates
 depend: y.tab.h
-<<<<<<< HEAD
-  if [ "\$(DEPEND)" != "" ]; then \\
-  echo "Building Makefile dependencies"; \\
-    \$(ECHO) "Creating " \$(DEPENDFILE) " ..."; \\
-    if [ -f \$(DEPENDFILE) ]; then \\
-      \$(MOVE) -f \$(DEPENDFILE) \$(DEPENDFILE).old; \\
-  fi; \\
-    touch \$(DEPENDFILE); \\
-  for i in ZZZ \$(VMD_CCPP) ; do \\
-    if [ "\$\$i" != "ZZZ" ]; then \\
-          \$(ECHO) checking dependencies for \$\$i ...; \\
-          \$(CCPP) \$(DEPEND) \$(CPPFLAGS) \$\$i |  \\
-      sed -e 's/\\/usr\\/include\\/[^ ]*\\..//g' \\
-          -e 's/\\.\\.\\/lib\\/.*\\/[^ ]*\\..//g' | \\
-      grep -v '^ *\\\\\$\$' >> \$(DEPENDFILE) ; \\
-    fi; \\
-  done; \\
-  for i in ZZZ \$(VMD_CC) ; do \\
-    if [ "\$\$i" != "ZZZ" ]; then \\
-          \$(ECHO) checking dependencies for \$\$i ...; \\
-          \$(CC) \$(DEPEND) \$(CFLAGS) \$\$i |  \\
-      sed -e 's/\\/usr\\/include\\/[^ ]*\\..//g' \\
-          -e 's/\\.\\.\\/lib\\/.*\\/[^ ]*\\..//g' | \\
-      grep -v '^ *\\\\\$\$' >> \$(DEPENDFILE) ; \\
-    fi; \\
-  done; \\
-  \$(ECHO) ParseTree.o AtomLexer.o AtomParser.o: y.tab.h \\
-                >> \$(DEPENDFILE); \\
-  \$(COPY) \$(DEPENDFILE) \$(DEPENDFILE).$config_arch ; \\
-  else \\
-    \$(ECHO) "Cannot find dependencies; your compiler does not support dependency checking."; \\
-        fi
-=======
+
 	if [ "\$(DEPEND)" != "" ]; then \\
 	echo "Building Makefile dependencies"; \\
 		\$(ECHO) "Creating " \$(DEPENDFILE) " ..."; \\
@@ -4187,7 +3997,6 @@ depend: y.tab.h
 	else \\
 		\$(ECHO) "Cannot find dependencies; your compiler does not support dependency checking."; \\
 				fi
->>>>>>> 8e1fb095f1570824ac623695f6b76d623e0437c1
 
 
 
