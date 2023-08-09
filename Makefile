@@ -31,9 +31,6 @@ compilevmd: copyvmd
 	cd vmd; \
 	./configure $(PLUGINTEXT) OPENGL TK FLTK IMD ACTC XINERAMA LIBTACHYON ZLIB LIBPNG NETCDF TCL PYTHON PTHREADS NUMPY COLVARS $(OSPRAY) ; \
 	cd src ; make -j
-	cd vmd-cuda; \
-	./configure $(PLUGINTEXT) OPENGL TK FLTK IMD ACTC XINERAMA LIBTACHYON ZLIB LIBPNG NETCDF TCL PYTHON PTHREADS NUMPY COLVARS $(OSPRAY) CUDA  $(OPTIX); \
-	cd src ; make -j
 
 installplugins:
 	@echo "Destination Directory:"
@@ -48,10 +45,8 @@ installvmd:
 
 install: installplugins installvmd
 	cp vmd.png debian/vmd/usr/share/pixmaps/
-	cp vmd.png debian/vmd-cuda/usr/share/pixmaps/
 	cp debian/vmd.desktop debian/vmd/usr/share/applications/
-	cp debian/vmd.desktop debian/vmd-cuda/usr/share/applications/
 	
 clean:
 	cd plugins; make clean ; cd ../vmd ; rm -rf plugins; cd src; make veryclean ; \
-	cd ../.. ; rm -rf vmd-cuda
+	cd ../.. 
