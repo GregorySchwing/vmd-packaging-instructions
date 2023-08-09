@@ -3,7 +3,6 @@ ARCH=$(shell getconf LONG_BIT)
 VMDVER="1.9.4a57"
 OPTIX=""
 OSPRAY=""
-
 ifeq ($(ARCH),64)
 	PLUGINTEXT=LINUXAMD64
 	#OPTIX=LIBOPTIX #Uncomment this if you want to add in the OptiX renderer. 

@@ -50,14 +50,14 @@ The code below will install the CUDA toolkit from NVIDIA for Ubuntu 22.04.
 
 
 ```bash
-wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb
-sudo dpkg -i cuda-keyring_1.0-1_all.deb
+sudo wget -O /etc/apt/preferences.d/cuda-repository-pin-600 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-ubuntu2204.pin
+sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/3bf863cc.pub
+sudo add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/ /"
 sudo apt update
 sudo apt install cuda
 ```
 
 If you prefer the older CUDA packages in the Ubuntu repositories, you'd do the following.
-I cannot emphasize enough how much of a pain it is to work with the Ubuntu version, which has at least one showstopping compilation bug in 22.04.
 ```bash
 sudo apt install nvidia-cuda-toolkit
 ```
@@ -137,6 +137,173 @@ sed -i 's/tcl8.5/tcl8.6/g' plugins/Make-arch
 
 This is a perl script that generates the `Makefile` that VMD actually compiles from.
 As you can see from [Robin's guide](https://robinbetz.com/blog/2015/01/08/compiling-vmd-with-python-support/), there are a *ton* of things to change here.
+This is the diff:
+```diff
+@@ -6,6 +6,17 @@
+ # Perl 5.x must be in your path, and /usr/bin/env must exist in order
+ # for this to work correctly.
+ 
++
++use Cwd;
++$cwd = getcwd();
++@parts = split(/\//, $cwd) ;
++$name = $parts[-1];
++$versionstring = quotemeta "-1.9.4a55";
++$name =~ s/$versionstring//g;
++print "Current working directory:\n";
++print "$cwd\n";
++print "$name\n";
++
+ ##############################################################################
+ # User modifiable installation parameters, can be overridden by env variables
+ ##############################################################################
+@@ -13,10 +24,10 @@
+ $install_name = "vmd";
+ 
+ # Directory where VMD startup script is installed, should be in users' paths.
+-$install_bin_dir="/usr/local/bin";
++$install_bin_dir="$cwd/../debian/$name/usr/bin";
+ 
+ # Directory where VMD files and executables are installed
+-$install_library_dir="/usr/local/lib/$install_name";
++$install_library_dir="$cwd/../debian/$name/usr/lib/$install_name";
+ 
+ 
+ # optionally override hard-coded defaults above with environment variables
+@@ -497,17 +508,16 @@
+ 
+ $arch_cc          = "cc";
+ $arch_ccpp        = "CC";
+-$arch_nvcc        = "/usr/local/cuda-10.2/bin/nvcc";
++$arch_nvcc        = "/usr/local/cuda/bin/nvcc";
+ $arch_nvccflags   = "-lineinfo --ptxas-options=-v " . 
+-                    "-gencode arch=compute_30,code=compute_30 " .
+-                    "-gencode arch=compute_30,code=sm_35 " .
+-                    "-gencode arch=compute_30,code=sm_37 " .
+-                    "-gencode arch=compute_50,code=compute_50 " .
+-                    "-gencode arch=compute_50,code=sm_50 " .
++			"-gencode arch=compute_52,code=sm_52 " .
+                     "-gencode arch=compute_60,code=compute_60 " .
+                     "-gencode arch=compute_60,code=sm_60 " .
+                     "-gencode arch=compute_70,code=compute_70 " .
+                     "-gencode arch=compute_70,code=sm_70 " .
++		    "-gencode arch=compute_75,code=sm_75 " .
++                    "-gencode arch=compute_80,code=sm_80 " .
++                    "-gencode arch=compute_86,code=sm_86 " .
+                     "--ftz=true ";
+ #                    "-gencode arch=compute_75,code=sm_75 " .
+ $arch_gcc         = "gcc";
+@@ -782,8 +792,8 @@
+ if ($config_tk) { $tcl_include .= " -I$stock_tk_include_dir"; }
+ $tcl_library      = "-L$stock_tcl_library_dir";
+ if ($config_tk) { $tcl_library .= " -L$stock_tk_library_dir"; }
+-$tcl_libs         = "-ltcl8.5";  
+-if ($config_tk) { $tcl_libs = "-ltk8.5 -lX11 " . $tcl_libs; }
++$tcl_libs         = "-ltcl8.6";  
++if ($config_tk) { $tcl_libs = "-ltk8.6 -lX11 " . $tcl_libs; }
+ 
+ @tcl_cc           = ();
+ @tcl_cu           = ();
+@@ -1005,9 +1015,9 @@
+ #   This option enables the use of CUDA GPU acceleration functions.
+ #######################
+ $cuda_defines     = "-DVMDCUDA -DMSMPOT_CUDA";
+-$cuda_dir         = "/usr/local/cuda-10.2";
+-$cuda_include     = "";
+-$cuda_library     = "";
++$cuda_dir         = "/usr/local/cuda";
++$cuda_include     = "-I$cuda_dir/include";
++$cuda_library     = "-L$cuda_dir/lib64";
+ $cuda_libs        = "-Wl,-rpath -Wl,\$\$ORIGIN/ -lcudart_static -lrt";
+ @cuda_cc          = ();
+ @cuda_cu	  = ('msmpot_cuda.cu',
+@@ -1198,7 +1208,7 @@
+ # OPTIONAL COMPONENT: Built-in NVIDIA OptiX rendering support 
+ # This may be commented out if not required.
+ if ($config_opengl) {
+-  $liboptix_defines     = "-DVMDLIBOPTIX -DVMDOPTIX_INTERACTIVE_OPENGL";
++  $liboptix_defines     = "-DVMDLIBOPTIX -DVMDOPTIX_INTERACTIVE_OPENGL -DVMDOPTIXRTRT";
+ } else {
+   $liboptix_defines     = "-DVMDLIBOPTIX ";
+ }
+@@ -1214,7 +1224,7 @@
+ # $liboptix_dir         = "/usr/local/encap/NVIDIA-OptiX-SDK-5.0.1-linux64";
+ # $liboptix_dir         = "/usr/local/encap/NVIDIA-OptiX-SDK-5.1.0-linux64";
+ # $liboptix_dir         = "/usr/local/encap/NVIDIA-OptiX-SDK-6.0.0-linux64";
+-$liboptix_dir         = "/usr/local/encap/NVIDIA-OptiX-SDK-6.5.0-linux64";
++$liboptix_dir         = "/usr";
+ # $liboptix_dir         = "/usr/local/encap/NVIDIA-OptiX-SDK-7.0.0-linux64";
+ 
+ # NCSA Blue Waters
+@@ -1369,7 +1379,7 @@
+   die "LIBPNG option requires ZLIB!";
+ }
+ $libpng_defines     = "-DVMDLIBPNG";
+-$libpng_dir         = "/Projects/vmd/vmd/lib/libpng";
++$libpng_dir         = "/usr/include/libpng";
+ $libpng_include     = "-I$libpng_dir/include";
+ $libpng_library     = "-L$libpng_dir/lib_$config_arch";
+ $libpng_libs        = "-lpng16";
+@@ -1672,7 +1682,7 @@
+ #  $stock_numpy_library_dir=$ENV{"NUMPY_LIBRARY_DIR"} || "/usr/local/lib";
+   $stock_numpy_include_dir=$ENV{"NUMPY_INCLUDE_DIR"} || "$vmd_library_dir/numpy/lib_$config_arch/include";
+   $stock_numpy_library_dir=$ENV{"NUMPY_LIBRARY_DIR"} || "$vmd_library_dir/python/lib_$config_arch/lib/python2.5/site-packages/numpy/core/include";
+-  $python_libs        = "-lpython2.5 -lpthread";
++  $python_libs        = "-lpython3.8 -lpthread";
+ }
+ 
+ $python_defines     = "-DVMDPYTHON";
+@@ -2586,7 +2596,7 @@
+ 
+     if ($config_cuda) {
+       $arch_nvccflags   .= " --machine 64 -O3 $cuda_include";
+-      $cuda_library     = "-L/usr/local/cuda-10.2/lib64";
++      $cuda_library     = "-L/usr/local/cuda/lib64";
+     }
+ 
+     $arch_lex		= "flex"; # has problems with vendor lex
+@@ -3834,8 +3844,9 @@
+ 	(cd "$install_library_dir" ; \$(TAR) -xf -)
+ 	-\$(CD) ..; \$(TAR) -cf - python | \\
+ 	(cd "$install_library_dir"/scripts ; \$(TAR) -xf -)
+-	-\$(CD) ..; \$(TAR) -cf - plugins | \\
+-	(cd "$install_library_dir" ; \$(TAR) -xf -)
++	#Plugins get installed by vmd-plugins. Don't worry about it. It's all taken care of.
++	#-\$(CD) ..; \$(TAR) -cf - plugins | \\
++	#(cd "$install_library_dir" ; \$(TAR) -xf -)
+ 	-\$(CD) ..; \$(TAR) -cf - shaders | \\
+ 	(cd "$install_library_dir" ; \$(TAR) -xf -)
+ 	if [ -f ../$config_arch/OptiXShaders.ptx ]; then \\
+@@ -3844,21 +3855,14 @@
+ 	-\$(COPY) ../data/.vmdrc ../data/.vmdsensors ../data/vmd_completion.dat "$install_library_dir"
+ 	\$(CD) $vmd_bin_dir ; \\
+ 	if [ -f run_vmd_tmp ]; then \$(DELETE) run_vmd_tmp; fi ; \\
+-	if [ ! -x "/bin/csh" ]; then \\
+-		\$(ECHO) "Info: /bin/csh shell not found, installing Bourne shell startup script instead" ; \\
+-		\$(ECHO) '#!/bin/sh' >> run_vmd_tmp ; \\
+-		\$(ECHO) 'defaultvmddir="$install_library_dir"' >> run_vmd_tmp ; \\
+-		\$(ECHO) 'vmdbasename=vmd' >> run_vmd_tmp ; \\
+-		cat $vmd_bin_sh >> run_vmd_tmp ; \\
+-	else \\
+-		\$(ECHO) '#!/bin/csh' >> run_vmd_tmp ; \\
+-		\$(ECHO) 'set defaultvmddir="$install_library_dir"' >> run_vmd_tmp ; \\
+-		\$(ECHO) 'set vmdbasename=vmd' >> run_vmd_tmp ; \\
+-		cat $vmd_bin_csh >> run_vmd_tmp ; \\
+-	fi ; \\
+-	chmod +x run_vmd_tmp ; \\
+-	\$(COPY) run_vmd_tmp "$install_bin_dir"/$install_name ; \\
+-	\$(DELETE) run_vmd_tmp
++    \$(ECHO) "Info: /bin/csh shell not found, installing Bourne shell startup script instead" ; \\
++    \$(ECHO) '#!/bin/sh' >> run_vmd_tmp ; \\
++    \$(ECHO) 'defaultvmddir=/usr/lib/vmd' >> run_vmd_tmp ; \\
++    \$(ECHO) 'vmdbasename=vmd' >> run_vmd_tmp ; \\
++    cat $vmd_bin_sh >> run_vmd_tmp ; \\
++  chmod +x run_vmd_tmp ; \\
++  \$(COPY) run_vmd_tmp "$install_bin_dir"/$install_name ; \\
++  \$(DELETE) run_vmd_tmp
+ 	\$(ECHO) Make sure "$install_bin_dir"/$install_name is in your path.
+ 	\$(ECHO) "VMD installation complete.  Enjoy!"
+```
 What the changes entail are to change libraries and change where the linker should look for the files.
 However, to save everyone's sanity, you can just copy this from one directory up. `cp edited/configure vmd/configure`
 
@@ -187,9 +354,12 @@ This has stride, tachyon, and surf executables set to weird paths. I put them in
 ```
 Again, you could copy this from the edited version from github. `cp edited/vmd.sh vmd/bin/vmd.sh`
 
+There is a syntactical mistake in `vmd/src/OptiXRenderer.C` in version 1.9.4a55 that newer versions of `gcc` don't like, so we also have one more copy to make.
+`cp edited/OptiXRenderer.C vmd/src/OptiXRenderer.C`
+
 ## Debuild builds packages
 
-The build process itself is largely automated by `debuild`, run from the base directory we have been working from (`vmdpackaging/vmd-1.9.4a57`).
+The build process itself is largely automated by `debuild`, run from the base directory we have been working from (`vmdpackaging/vmd-1.9.4a55`).
 
 ```bash
 debuild -b
@@ -203,7 +373,7 @@ This is to be expected, and so long as the `.deb` files are produced, these erro
 To install these packages directly, you would do something like:
 ```bash
 cd .. #Puts you in the right directory.
-sudo dpkg -i vmd-cuda_1.9.4a57-1_amd64.deb vmd-plugins_1.9.4a57-1_amd64.deb
+sudo dpkg -i vmd-cuda_1.9.4a55-3_amd64.deb vmd-plugins_1.9.4a55-3_amd64.deb
 ```
 
 This would get you a `vmd` command already added to your path, which includes Python support through system Python libraries.
@@ -219,9 +389,9 @@ With the setup complete, the commands to add the newly built packages to the rep
 
 ```bash
 cd /var/www/repos/apt/ubuntu/
-sudo reprepro includedeb focal ~/vmdpackaging/vmd-cuda_1.9.4a57-1_amd64.deb
-sudo reprepro includedeb focal ~/vmdpackaging/vmd-plugins_1.9.4a57-1_amd64.deb
-sudo reprepro includedeb focal ~/vmdpackaging/vmd_1.9.4a57-1_amd64.deb
+sudo reprepro includedeb focal ~/vmdpackaging/vmd-cuda_1.9.4a55-3_amd64.deb
+sudo reprepro includedeb focal ~/vmdpackaging/vmd-plugins_1.9.4a55-3_amd64.deb
+sudo reprepro includedeb focal ~/vmdpackaging/vmd_1.9.4a55-3_amd64.deb
 ```
 
 
