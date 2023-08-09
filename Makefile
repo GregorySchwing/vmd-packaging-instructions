@@ -25,7 +25,7 @@ compileplugins:
 	NETCDFLIB=-L/usr/lib NETCDFINC=-I/usr/include/ -j ; make distrib PLUGINDIR=$(DESTDIR)/vmd/plugins ; \
 	# TNGLIB=-L/usr/local/lib TNGINC=-I/usr/local/include
 copyvmd:
-	cp -r vmd
+	cp -r vmd vmd-cuda
 
 compilevmd: copyvmd
 	cd vmd; \
