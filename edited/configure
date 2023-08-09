@@ -264,7 +264,7 @@ foreach $term (@ARGV) {
 		if ($term eq "FREEVR")          { $config_freevr          = 1;
 																			$config_opengl_dep      = 1; next; }
 
-
+<<<<<<< HEAD
     # GUI options
     if ($term eq "FLTK" )           { $config_fltk            = 1; next; }
     if ($term eq "TK")              { $config_tk              = 1; next; }
@@ -320,7 +320,62 @@ foreach $term (@ARGV) {
     if ($term eq "RPM")             { $config_rpm             = 1; next; }
     if ($term eq "TKCON")           { $config_tkcon           = 1; next; }
     if ($term eq "NOSTATICPLUGINS") { $config_staticplugin    = 0; next; }
-
+=======
+		# GUI options
+		if ($term eq "FLTK" )           { $config_fltk            = 1; next; }
+		if ($term eq "TK")              { $config_tk              = 1; next; }
+		
+		# Optional components
+		if ($term eq "ACTC")            { $config_actc            = 1; next; }
+		if ($term eq "AVX512")          { $config_avx512          = 1; next; }
+		if ($term eq "CPUDISPATCH")     { $config_cpudispatch     = 1; next; }
+		if ($term eq "CUDA")            { $config_cuda            = 1; next; }
+		if ($term eq "CXX11")           { $config_cxx11           = 1; next; }
+		if ($term eq "OPENCL")          { $config_opencl          = 1; next; }
+		if ($term eq "MPI")             { $config_mpi             = 1; next; }
+		if ($term eq "NVENC")           { $config_nvenc           = 1; next; }
+		if ($term eq "NVPIPE")          { $config_nvpipe          = 1; next; }
+		if ($term eq "NVTX")            { $config_nvtx            = 1; next; }
+		if ($term eq "IMD")             { $config_imd             = 1; next; }
+		if ($term eq "LIBSBALL")        { $config_libsball        = 1; next; }
+		if ($term eq "XINERAMA")        { 
+			if ($config_opengl) {
+				$config_xinerama       = 1; 
+			} else {
+				print "Removing XINERAMA option since windowed-OpenGL is not enabled\n";
+			}
+			next; 
+		}
+		if ($term eq "XINPUT")          {
+			if ($config_opengl) {
+				$config_xinput         = 1;
+			} else {
+				print "Removing XINPUT option since windowed-OpenGL is not enabled\n";
+			}
+			next;
+		}
+		if ($term eq "TDCONNEXION")     { $config_tdconnexion     = 1; next; }
+		if ($term eq "LIBANARI" )       { $config_libanari        = 1; next; }
+		if ($term eq "LIBGELATO" )      { $config_libgelato       = 1; next; }
+		if ($term eq "LIBOPTIX" )       { $config_liboptix        = 1; next; }
+		if ($term eq "LIBOSPRAY" )      { $config_libospray       = 1; next; }
+		if ($term eq "LIBOSPRAY2" )     { $config_libospray2      = 1; next; }
+		if ($term eq "LIBTACHYON")      { $config_libtachyon      = 1; next; }
+		if ($term eq "LIBPNG")          { $config_libpng          = 1; next; }
+		if ($term eq "LINENOISE")       { $config_linenoise       = 1; next; }
+		if ($term eq "ZLIB")            { $config_zlib            = 1; next; }
+		if ($term eq "OPENHMD" )        { $config_openhmd         = 1; next; }
+		if ($term eq "VRPN")            { $config_vrpn            = 1; next; }
+		if ($term eq "NETCDF")          { $config_netcdf          = 1; next; }
+		if ($term eq "COLVARS")         { $config_colvars         = 1; next; }
+		if ($term eq "CONTRIB")         { $config_contrib         = 1; next; }
+		if ($term eq "TCL")             { $config_tcl             = 1; next; }
+		if ($term eq "PYTHON")          { $config_python          = 1; next; }
+		if ($term eq "PTHREADS")        { $config_pthreads        = 1; next; }
+		if ($term eq "NUMPY")           { $config_numeric         = 1; next; }
+		if ($term eq "RPM")             { $config_rpm             = 1; next; }
+		if ($term eq "TKCON")           { $config_tkcon           = 1; next; }
+		if ($term eq "NOSTATICPLUGINS") { $config_staticplugin    = 0; next; }
 
 		# once optional, these are now required.  They exist for backwards
 		# compatibility; some may be expanded again in the future
